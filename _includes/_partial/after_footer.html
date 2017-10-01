@@ -1,11 +1,11 @@
-<script src="{{ site.assets }}/js/jquery-2.0.3.min.js"></script>
-<script src="{{ site.assets }}/js/jquery.imagesloaded.min.js"></script>
-<script src="{{ site.assets }}/js/gallery.js"></script>
-<script src="{{ site.assets }}/js/jquery.qrcode-0.12.0.min.js"></script>
-<script src="{{ site.assets }}/js/toc.js"></script>
+<script src="{{ site.baseurl }}{{ site.assets }}/js/jquery-2.0.3.min.js"></script>
+<script src="{{ site.baseurl }}{{ site.assets }}/js/jquery.imagesloaded.min.js"></script>
+<script src="{{ site.baseurl }}{{ site.assets }}/js/gallery.js"></script>
+<script src="{{ site.baseurl }}{{ site.assets }}/js/jquery.qrcode-0.12.0.min.js"></script>
+<script src="{{ site.baseurl }}{{ site.assets }}/js/toc.js"></script>
 
 <script type="text/javascript">
-$(document).ready(function(){ 
+$(document).ready(function(){
   $('.navbar').click(function(){
     $('header nav').toggleClass('shownav');
   });
@@ -28,39 +28,70 @@ $(document).ready(function(){
   });
   o.click(function(){
     o.css('display', 'none').removeClass('beforeFadeIn');
-    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
     m.removeClass('moveMain');
   });
   $(window).scroll(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
-  
-  {% if page.type == 'post' && site.close_aside %}
+
+  {% if page.layout == 'post' and site.close_aside %}
         getSize();
         if (myWidth >= 1024) {
           c.click();
+          $('#toc.toc-aside').show();
         }
   {% endif %}
-  
+
   $(window).resize(function(){
-    getSize(); 
+    getSize();
     if (myWidth >= 1024) {
       $('header nav').removeClass('shownav');
     }else{
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
-      {% if page.type == 'post' and page.toc != false and site.toc.aside %}
+      {% if page.layout == 'post' and page.toc != false and site.toc.aside %}
       $('#toc.toc-aside').css('display', 'none');
       {% endif %}
     }
   });
 });
 </script>
-{% if page.type == 'post' %}
+
+{% if site.widgets contains "tagcloud" %}
+<script src="{{ site.baseurl }}{{ site.assets }}/js/tagcloud.js"></script>
+<script>
+$(document).ready(function() {
+  var tags = [
+    {% for item in site.tags %}
+    { "name": "{{ item[0] }}", "path": "{{ site.baseurl }}/tags/#{{ item[0] }}", "length": {{ item[1] | size }} },
+    {% endfor %}
+  ];
+  $("#tagcloud").html(tagcloudHelper(tags));
+});
+</script>
+{% endif %}
+
+{% if page.layout == 'post' %}
 <script type="text/javascript">
-$(document).ready(function(){ 
-  $('.toc-content').toc();
+$(document).ready(function(){
+  $('#toc.toc-aside').toc({
+    title: "{{ lang.contents }}",
+    showEffect: "none"
+  });
+  $('#toc.toc-article').toc({
+    title: "{{ lang.contents }}",
+    showEffect: "show",
+    showSpeed: 0
+  });
+});
+</script>
+{% endif %}
+
+{% if page.layout == 'post' %}
+<script type="text/javascript">
+$(document).ready(function(){
   var ai = $('.article-content>iframe'),
       ae = $('.article-content>embed'),
       t  = $('#toc'),
@@ -86,9 +117,9 @@ $(document).ready(function(){
 </script>
 {% endif %}
 
-{% if (page.type == 'post' or page.type == 'page' or page.type == 'photo') and !site.jiathis.enable  %}
+{% if (page.layout == 'post' or page.layout == 'page' or page.layout == 'photo') and !site.jiathis.enable  %}
 <script type="text/javascript">
-$(document).ready(function(){ 
+$(document).ready(function(){
   var $this = $('.share'),
       url = $this.attr('data-url'),
       encodedUrl = encodeURIComponent(url),
@@ -107,7 +138,7 @@ $(document).ready(function(){
   '<span title="Share to"></span>'
   ].join('');
   $this.append(html);
-  
+
   $('.article-share-qrcode').click(function(){
     var imgSrc = $('#qrcode-pic').attr('data-src');
     $('#qrcode-pic').attr('src', imgSrc);
@@ -143,7 +174,7 @@ $(document).ready(function(){
       //$('.hoverqrcode').hide();
   });
   */
-});   
+});
 </script>
 {% endif %}
 
@@ -155,10 +186,10 @@ $(document).ready(function(){
     ds.type = 'text/javascript';ds.async = true;
     ds.src = '//static.duoshuo.com/embed.js';
     ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
+    (document.getElementsByTagName('head')[0]
     || document.getElementsByTagName('body')[0]).appendChild(ds);
   })();
-</script> 
+</script>
 {% endif %}
 {% if site.disqus_shortname %}
 <script type="text/javascript">
@@ -179,11 +210,20 @@ var disqus_shortname = '{{ site.disqus_shortname }}';
 }());
 </script>
 {% endif %}
+{% if site.yungentie_productkey and page.layout == 'default' %}
+<!-- JavaScript 配置 -->
+<script>var yunModuleEnv = true;</script>
+<script src="https://img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
+<script>
+  var yunTieProductKey = "{{ site.yungentie_productkey }}";
+  Tie.loader("aHR0cHM6Ly9hcGkuZ2VudGllLjE2My5jb20vZXh0ZW5kL2xpc3Rfam9pbl9zY3JpcHQuaHRtbA==", true);
+</script>
+{% endif %}
 
 <!--
-{% if page.type == 'tags' or page.type == 'categories' %}
+{% if page.layout == 'tags' or page.layout == 'categories' %}
 <script type="text/javascript">
-$(document).ready(function(){ 
+$(document).ready(function(){
   var list    = $('.archive-title a'),
       box     = $('.all-list-box'),
       first   = $('.archive-title a:first-of-type');
@@ -195,14 +235,14 @@ $(document).ready(function(){
       box.load(listSrc);
       list.removeClass('current');
       $(this).addClass('current');
-     });  
+     });
     });
-  }); 
+  });
 </script>
 {% endif %}
 -->
 
-{% if page.type == 'archives' or page.type == 'categories' or page.type == 'tags' %}
+{% if page.layout == 'archives' or page.layout == 'categories' or page.layout == 'tags' %}
 <script type="text/javascript">
 $(document).ready(function(){
     var show_post = function(anchor) {
@@ -219,16 +259,16 @@ $(document).ready(function(){
             show_post(this.hash);
         }
     });
-    
+
 });
 </script>
 {% endif %}
 
 {% if site.fancybox %}
-<link rel="stylesheet" href="{{ site.assets }}/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="{{ site.assets }}/fancybox/jquery.fancybox.pack.js"></script>
+<link rel="stylesheet" href="{{ site.baseurl }}{{ site.assets }}/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="{{ site.baseurl }}{{ site.assets }}/fancybox/jquery.fancybox.pack.js"></script>
 <script type="text/javascript">
-$(document).ready(function(){ 
+$(document).ready(function(){
   $('.article-content').each(function(i){
     $(this).find('img').each(function(){
       if ($(this).parent().hasClass('fancybox')) return;
@@ -244,7 +284,7 @@ $(document).ready(function(){
   if($.fancybox){
     $('.fancybox').fancybox();
   }
-}); 
+});
 </script>
 {% endif %}
 
