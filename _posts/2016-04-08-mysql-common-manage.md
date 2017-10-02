@@ -1,5 +1,6 @@
 ---
 title: 管理Mysql常用指令
+comment: true
 date: 2016-04-08 16:57:30
 categories: Mysql
 tags:

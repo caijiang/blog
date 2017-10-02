@@ -1,5 +1,6 @@
 ---
 title: Java如何在运行时获知自身Jar的版本
+comment: true
 date: 2016-05-09 10:30:52
 categories: Java
 tags:

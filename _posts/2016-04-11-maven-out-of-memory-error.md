@@ -1,5 +1,6 @@
 ---
 title: Maven OutOfMemoryError
+comment: true
 date: 2016-04-11 16:47:34
 categories: Maven
 tags:
